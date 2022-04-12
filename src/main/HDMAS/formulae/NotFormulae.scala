@@ -1,4 +1,5 @@
 package formulae
+import ap.parser._
 import formulae.BooleanConnectiveType.BooleanConnectiveType
 import formulae.FormulaeType.{FormulaeType, NOT}
 
@@ -25,4 +26,6 @@ class NotFormulae(nestedFormula:Formulae) extends UnaryFormulae(nestedFormula) w
   override def negate(): Formulae = this.getNestedFormula.copy()
 
   override def substitute(oldOne: Variable, newOne: Term): Unit = this.nestedFormula.substitute(oldOne, newOne)
+
+  // override def toPrincess: IFormula = INot(this.getNestedFormula.toPrincess)
 }

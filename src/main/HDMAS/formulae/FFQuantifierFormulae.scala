@@ -1,5 +1,7 @@
 package formulae
 
+import ap.parser.IExpression.{ConstantTerm, Quantifier, quanConsts}
+import ap.parser.IFormula
 import formulae.FormulaeType.FormulaeType
 import formulae.QuantifierType.QuantifierType
 
@@ -31,5 +33,10 @@ class FFQuantifierFormulae(nested:Formulae,var1:Variable,var2:Variable) extends 
   override def getQuantifierType: QuantifierType = QuantifierType.FF
 
   override def toString: String = "Forall" + " " + this.getQuantifiedVariable1 + "Forall" + " " + this.getQuantifiedVariable2 + ": (" + this.getNestedFormula + ")"
+
+  /* override def toPrincess: IFormula = {
+    val valList = List[ConstantTerm](this.getQuantifiedVariable1.toPrincess,this.getQuantifiedVariable2.toPrincess)
+    quanConsts(Quantifier.ALL,valList,this.getNestedFormula.toPrincess)
+  } */
 
 }

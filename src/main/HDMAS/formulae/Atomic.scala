@@ -1,5 +1,6 @@
 package formulae
 
+import ap.parser._
 import formulae.FormulaeType.{ATOMIC, FormulaeType}
 
 import java.util
@@ -27,6 +28,12 @@ class Atomic extends AtomicFormulae {
       }else{ throw new RuntimeException("Too many arguments")}
     }
   }
+
+  /* override def toPrincess: IFormula = {
+    var termSeq = Seq[ITerm]()
+    this.arguments.forEach(x => termSeq = termSeq :+ x.toPrincess)
+    IAtom(this.predicate.toPrincess,termSeq)
+  } */
 
   def getPredicate:Predicate = this.predicate
 

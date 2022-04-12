@@ -1,6 +1,7 @@
 package formulae
 
-
+import ap.parser._
+import IExpression._
 import formulae.FormulaeType.FormulaeType
 
 trait Formulae extends Cloneable{
@@ -21,6 +22,8 @@ trait Formulae extends Cloneable{
   def negate(): Formulae
 
   def substitute(oldOne:Variable,newOne:Term):Unit
+
+  //def toPrincess:IFormula
 
   //def assignSort(variable: Variable,sort: Sort):Unit
 

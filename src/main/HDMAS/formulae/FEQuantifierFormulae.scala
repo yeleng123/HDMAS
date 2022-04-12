@@ -1,5 +1,7 @@
 package formulae
 
+import ap.parser.IExpression.{Quantifier, quanConsts}
+import ap.parser.{IExpression, IFormula}
 import formulae.FormulaeType.FormulaeType
 import formulae.QuantifierType.QuantifierType
 
@@ -23,6 +25,7 @@ class FEQuantifierFormulae(nested:Formulae,var1:Variable,var2:Variable) extends 
     this.quantifierFormulaFactory(QuantifierType.EF, n, v1,v2)
   }
 
+
   override def stringQuantifier(): String = "FE"
 
   override def getFormulaType: FormulaeType = FormulaeType.FE
@@ -30,5 +33,10 @@ class FEQuantifierFormulae(nested:Formulae,var1:Variable,var2:Variable) extends 
   override def getQuantifierType: QuantifierType = QuantifierType.FE
 
   override def toString: String = "Forall"  + this.getQuantifiedVariable1 + "Exists"  + this.getQuantifiedVariable2 + ": (" + this.getNestedFormula + ")"
+
+  /* override def toPrincess: IFormula = {
+    val seq = Seq((Quantifier.ALL,this.getQuantifiedVariable1.toPrincess),(Quantifier.EX,this.getQuantifiedVariable2.toPrincess))
+    quanConsts(seq,this.getNestedFormula.toPrincess)
+  } */
 
 }

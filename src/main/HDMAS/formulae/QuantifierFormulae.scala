@@ -8,13 +8,14 @@ import formulae.QuantifierType.{EE, EF, EXISTS, FE, FF, FORALL, QuantifierType}
 
 
 abstract class QuantifierFormulae(nf:Formulae, qv1:Variable,qv2:Variable) extends Formulae {
+  //qv1 qv2 means position not y1 y2
   //@BeanProperty var nestedFormula:Formulae = nf
   //@BeanProperty var quantifiedVariable:Variable = qv
   val nestedFormula:Formulae = nf
   val quantifiedVariable1:Variable = qv1
   val quantifiedVariable2:Variable = qv2
-  val y1:Variable = new Variable("y1")
-  val y2:Variable = new Variable("y2")
+  val y1:Variable = new Variable(1)
+  val y2:Variable = new Variable(2)
   //检查quantified variable一定为y1 或 y2
   if (this.getQuantifiedVariable2 == null) {
     if (this.getQuantifiedVariable1 != y1 && this.getQuantifiedVariable1 != y2){throw new RuntimeException("Incorrect Exists/Forall formula")}

@@ -1,9 +1,13 @@
 package formulae
 
+import ap.parser._
+import IExpression._
 import formulae.FormulaeType.{CONSTANT, FormulaeType, VARIABLE}
+
 //import scala.beans.BeanProperty
 
-abstract class Term(n:Any) extends Cloneable{
+//abstract class Term(n:Any) extends Cloneable{
+abstract class Term(n:Int) extends Cloneable{
 
   //private var name:String = _
 
@@ -11,9 +15,11 @@ abstract class Term(n:Any) extends Cloneable{
     this.name = name
   }*/
   //@BeanProperty val name = n
-  val name:Any = n
+  val name:Int = n
 
-  def getName:Any = this.name
+  def toPrincess:ITerm
+
+  def getName:Int = this.name
 
   def substitute(oldOne:Variable,newOne:Term):Term = {
     if (oldOne == this) {
@@ -30,7 +36,7 @@ abstract class Term(n:Any) extends Cloneable{
 
     if (obj != null && this.getClass.equals(obj.getClass)){
       val other:Term = obj.asInstanceOf[Term]
-      res = this.getName.equals(other.name)
+      res = this.getName == other.name
     }
     res
   }
@@ -38,7 +44,7 @@ abstract class Term(n:Any) extends Cloneable{
   override def hashCode(): Int = {
     var res:Int = this.getClass.hashCode()
     res = 31*res
-    res = res + (if (this.getName != null) this.getName.hashCode() else 0)
+    res = res + this.getName.hashCode()
     res
   }
 
@@ -46,9 +52,9 @@ abstract class Term(n:Any) extends Cloneable{
 
   def copy(): Term = {termFactory(this.getTermType,this.getName)}
 
-  def termFactory(formulae_Type: FormulaeType.FormulaeType, name: Any):Term = formulae_Type match {
+  def termFactory(formulae_Type: FormulaeType.FormulaeType, name: Int):Term = formulae_Type match {
     case CONSTANT =>new Constant(name)
-    case VARIABLE => new Variable(name.asInstanceOf[String])
+    case VARIABLE => new Variable(name)
     case _ => throw new RuntimeException("Unknown term type")
   }
 

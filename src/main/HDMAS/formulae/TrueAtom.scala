@@ -10,4 +10,6 @@ class TrueAtom extends AtomicFormulae {
 
   override def substitute(oldOne: Variable, newOne: Term): Unit = null
 
+  // def toPrincess = true
+
 }

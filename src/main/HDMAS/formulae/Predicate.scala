@@ -1,6 +1,9 @@
 package formulae
 //import scala.beans.BeanProperty
 
+import ap.parser._
+import ap.terfor.preds
+import IExpression._
 class Predicate(n:String,a:Int) extends Cloneable{ // 谓词：表关系
 
   //@BeanProperty var name:String = n
@@ -33,6 +36,8 @@ class Predicate(n:String,a:Int) extends Cloneable{ // 谓词：表关系
   }
 
   def copy():Predicate = new Predicate(this.getName, this.getArity)
+
+  def toPrincess = new ap.terfor.preds.Predicate(this.getName,getArity)
 
 
 

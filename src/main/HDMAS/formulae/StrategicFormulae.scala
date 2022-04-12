@@ -4,22 +4,22 @@ import formulae.FormulaeType.{FormulaeType, STRATEGIC}
 
 //import scala.beans.BeanProperty
 
-class StrategicFormulae(t1:Any,t2:Any,nested:PathFormulae) extends Formulae{
-  var controllableAgent:Any = t1
-  var uncontrollableAgent:Any = t2
+class StrategicFormulae(t1:Term,t2:Term,nested:PathFormulae) extends Formulae{
+  var controllableAgent:Term = t1
+  var uncontrollableAgent:Term = t2
   var nestedFormula:PathFormulae = nested
-  val y1:Variable = new Variable("y1")
-  val y2:Variable = new Variable("y2")
+  val y1:Variable = new Variable(1)
+  val y2:Variable = new Variable(2)
   if (this.getControllableAgent == y2 || this.getUncontrollableAgent == y1){ throw new RuntimeException("Incorrect strategic formula")}
 
 
 
-  def getControllableAgent : Any = this.controllableAgent
-  def getUncontrollableAgent : Any = this.uncontrollableAgent
+  def getControllableAgent : Term = this.controllableAgent
+  def getUncontrollableAgent : Term = this.uncontrollableAgent
   def getNestedFormula:PathFormulae = nestedFormula
 
-  def setControllableAgent(ca:Int):Unit = {this.controllableAgent = ca}
-  def setUncontrollableAgent(uca:Int):Unit = {this.uncontrollableAgent = uca}
+  def setControllableAgent(ca:Term):Unit = {this.controllableAgent = ca}
+  def setUncontrollableAgent(uca:Term):Unit = {this.uncontrollableAgent = uca}
 
   override def getFormulaType: FormulaeType = STRATEGIC
 
@@ -51,6 +51,8 @@ class StrategicFormulae(t1:Any,t2:Any,nested:PathFormulae) extends Formulae{
   }
 
   override def substitute(oldOne: Variable, newOne: Term): Unit = {
+    if (this.getControllableAgent == oldOne){this.controllableAgent = newOne}
+    if (this.getUncontrollableAgent == oldOne){this.uncontrollableAgent = newOne}
     this.nestedFormula.substitute(oldOne,newOne)
   }
 

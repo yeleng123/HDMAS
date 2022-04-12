@@ -1,4 +1,5 @@
 package formulae
+import ap.parser.IFormula
 import formulae.BooleanConnectiveType.{AND, BooleanConnectiveType}
 import formulae.FormulaeType.FormulaeType
 
@@ -26,19 +27,23 @@ class AndFormulae(left:Formulae, right:Formulae) extends BinaryFormulae(left,rig
     this.boolFormulaFactory(BooleanConnectiveType.OR, left, right)
   }
 
+  /* def toPrincess: IFormula = {
+    this.getLeftFormula.toPrincess & this.getRightFormula.toPrincess
+  } */
+
 
 }
 
 object AndFormulae{
   def main(args: Array[String]): Unit ={
-    val name = new Variable("N")
-    val age = new Variable("A")
+    val name = new Variable(1)
+    val age = new Variable(2)
     val pName = new Predicate("Name",1)
     val qAge = new Predicate("Age",1)
     val aName = new Atomic(pName,name)
     val aAge = new Atomic(qAge,age)
     val and = new AndFormulae(aName,aAge)
-    val newName = new Constant("Ann")
+    val newName = new Constant(1)
     and.substitute(name,newName)
     println(and.toString)
   }

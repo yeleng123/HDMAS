@@ -1,3 +1,5 @@
+import ap.parser.IVariable
+import ap.types.Sort.Nat
 import formulae.FormulaeType
 import formulae._
 
@@ -30,8 +32,8 @@ class Function {
         new OrFormulae(PQE(left), PQE(right))
 
       case FormulaeType.STRATEGIC =>
-        val t1: Any = f.asInstanceOf[StrategicFormulae].getControllableAgent
-        val t2: Any = f.asInstanceOf[StrategicFormulae].getUncontrollableAgent
+        val t1: Term = f.asInstanceOf[StrategicFormulae].getControllableAgent
+        val t2: Term = f.asInstanceOf[StrategicFormulae].getUncontrollableAgent
         val nested: Formulae = f.asInstanceOf[StrategicFormulae].getNestedFormula
         //val nestedType: FormulaeType.FormulaeType = f.getFormulaType
         new StrategicFormulae(t1, t2, PQE(nested).asInstanceOf[PathFormulae])
@@ -55,8 +57,8 @@ class Function {
 
       case FormulaeType.FORALL | FormulaeType.EXISTS | FormulaeType.FF | FormulaeType.FE | FormulaeType.EE | FormulaeType.EF =>
         val zero: Constant = new Constant(0)
-        val y1: Variable = new Variable("y1")
-        val y2: Variable = new Variable("y2")
+        val y1: Variable = new Variable(1)
+        val y2: Variable = new Variable(2)
 
         ftype match {
           case FormulaeType.FORALL =>
@@ -186,8 +188,9 @@ class Function {
 
 
   def PUSH(q:QuantifierType.QuantifierType,qv1:Variable,qv2:Variable,f:Formulae):Formulae = {
-    val y1: Variable = new Variable("y1")
-    val y2: Variable = new Variable("y2")
+    //qv1 qv2 means position
+    val y1: Variable = new Variable(1)
+    val y2: Variable = new Variable(2)
     f.getFormulaType match {
       case FormulaeType.TRUE_ATOM => f
 
@@ -559,17 +562,20 @@ class Function {
 
 object Function{
   def main(args: Array[String]): Unit ={
-    val y1: Variable = new Variable("y1")
-    val y2: Variable = new Variable("y2")
-    val name1 = new Variable("N1")
-    val pName1 = new Predicate("p1",1)
-    val p1 = new Atomic(pName1,name1)
-    val name2 = new Variable("N2")
-    val pName2 = new Predicate("p2",1)
-    val p2 = new Atomic(pName2,name2)
-    val name3 = new Variable("N3")
-    val pName3 = new Predicate("p3",1)
-    val p3 = new Atomic(pName3,name3)
+    val y1: Variable = new Variable(1)
+    val y2: Variable = new Variable(2)
+    //val name1 = new Variable(3)
+    //val pName1 = new Predicate("p1",1)
+    //val p1 = new Atomic(pName1,name1)
+    val p1 = new AtomicProposition("p1")
+    //val name2 = new Variable(4)
+    //val pName2 = new Predicate("p2",1)
+    //val p2 = new Atomic(pName2,name2)
+    val p2 = new AtomicProposition("p2")
+    //val name3 = new Variable(5)
+    //val pName3 = new Predicate("p3",1)
+    //val p3 = new Atomic(pName3,name3)
+    val p3 = new AtomicProposition("p3")
     val part1_1_1 = new NextFormulae(p1)
     val part1_1_2 = new StrategicFormulae(y1,y2,part1_1_1)
     val part1_1_3 = new ForallQuantifierFormulae(part1_1_2,y2)
@@ -586,7 +592,7 @@ object Function{
     val formula = new ForallQuantifierFormulae(new OrFormulae(part1,part2),y1)
     val f = new Function
 
-    println(f.PUSH(QuantifierType.FORALL,y1,null,formula).toString)
+    //println(f.PUSH(QuantifierType.FORALL,y1,null,formula).toString)
 
     println("*************")
 
@@ -606,9 +612,11 @@ object Function{
 
     //println("*************")
 
-    println(f.PUSH(QuantifierType.FORALL,y1,null,new OrFormulae(A,B)))
+    //println(f.PUSH(QuantifierType.FORALL,y1,null,new OrFormulae(A,B)))
 
     println(f.NF(formula))
+
+
 
 
   }

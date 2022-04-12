@@ -1,4 +1,5 @@
 package formulae
+import ap.parser.IFormula
 import formulae.BooleanConnectiveType.BooleanConnectiveType
 import formulae.FormulaeType.{DOUBLE_IMPL, FormulaeType}
 
@@ -25,5 +26,8 @@ class DoubleImplFormulae(left:Formulae,right:Formulae) extends BinaryFormulae(le
   override def negate(): Formulae = {
     this.nnf().negate()
   }
+
+  // princess中没有<-> 的概念，由于本系统中大概率上用不到这个类型的formula，因此姑且把其写成->的形式，
+  // override def toPrincess: IFormula = this.getLeftFormula.toPrincess ==> this.getRightFormula.toPrincess
 
 }

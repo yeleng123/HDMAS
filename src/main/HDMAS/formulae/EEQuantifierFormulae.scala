@@ -1,9 +1,13 @@
 package formulae
+import ap.parser.IExpression.{ConstantTerm, Quantifier, quanConsts}
+import ap.parser.IFormula
 import formulae.FormulaeType.FormulaeType
 import formulae.QuantifierType.QuantifierType
 
 class EEQuantifierFormulae(nested:Formulae,var1:Variable,var2:Variable) extends QuantifierFormulae(nested,var1,var2){
   //if (((var1_1 != null && var1_2!= null) || (var1_1 == null && var1_2 == null)) && ((var2_1 != null && var2_2!= null) || (var2_1 == null && var2_2 == null))) {throw new RuntimeException("Incorrect quantified variable")}
+
+
   override def nnf(): Formulae = {
     val n:Formulae = this.getNestedFormula.nnf()
     val v1:Variable = this.getQuantifiedVariable1
@@ -29,5 +33,10 @@ class EEQuantifierFormulae(nested:Formulae,var1:Variable,var2:Variable) extends 
   override def getQuantifierType: QuantifierType = QuantifierType.EE
 
   override def toString: String = "Exists" + this.getQuantifiedVariable1 + "Exists"  + this.getQuantifiedVariable2 + ": (" + this.getNestedFormula + ")"
+
+  /* override def toPrincess: IFormula = {
+    val valList = List[ConstantTerm](this.getQuantifiedVariable1.toPrincess,this.getQuantifiedVariable2.toPrincess)
+    quanConsts(Quantifier.EX,valList,this.getNestedFormula.toPrincess)
+  } */
 
 }

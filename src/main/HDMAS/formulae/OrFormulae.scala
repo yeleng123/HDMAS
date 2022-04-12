@@ -1,5 +1,6 @@
 package formulae
 
+import ap.parser.IFormula
 import formulae.BooleanConnectiveType.{BooleanConnectiveType, OR}
 import formulae.FormulaeType.FormulaeType
 
@@ -24,5 +25,7 @@ class OrFormulae(left:Formulae,right:Formulae) extends BinaryFormulae(left,right
     val right: formulae.Formulae = this.getRightFormula.negate()
     this.boolFormulaFactory(BooleanConnectiveType.AND, left, right)
   }
+
+  // override def toPrincess: IFormula = this.getLeftFormula.toPrincess | this.getRightFormula.toPrincess
 
 }

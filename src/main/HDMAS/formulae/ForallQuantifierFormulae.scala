@@ -1,4 +1,6 @@
 package formulae
+import ap.parser.IExpression.{ConstantTerm, Quantifier, quanConsts}
+import ap.parser.IFormula
 import formulae.FormulaeType.{FORALL, FormulaeType}
 import formulae.QuantifierType.QuantifierType
 
@@ -14,6 +16,12 @@ class ForallQuantifierFormulae(nested:Formulae, qvar1:Variable) extends Quantifi
   override def getQuantifierType: QuantifierType = {
     QuantifierType.FORALL
   }
+
+  /* override def toPrincess: IFormula = {
+    val valList = List[ConstantTerm](this.getQuantifiedVariable1.toPrincess)
+    quanConsts(Quantifier.ALL,valList,this.getNestedFormula.toPrincess)
+  } */
+
 
   override def nnf(): Formulae = {
     val nested: Formulae = this.getNestedFormula.nnf()

@@ -1,4 +1,5 @@
 package formulae
+import ap.parser.IFormula
 import formulae.FormulaeType.{FALSE_ATOM, FormulaeType}
 
 class FalseAtom extends AtomicFormulae {
@@ -9,4 +10,6 @@ class FalseAtom extends AtomicFormulae {
   override def negate():Formulae = new TrueAtom
 
   override def substitute(oldOne: Variable, newOne: Term): Unit = null
+
+  // override def toPrincess: IFormula = false
 }

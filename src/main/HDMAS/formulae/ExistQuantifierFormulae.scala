@@ -1,10 +1,16 @@
 package formulae
+import ap.parser._
+import IExpression._
 import formulae.FormulaeType.{EXISTS, FormulaeType}
 import formulae.QuantifierType.QuantifierType
 
 class ExistQuantifierFormulae(nested:Formulae,qvar1:Variable) extends QuantifierFormulae(nested,qvar1,null) {
 
   //if ((qvar1 != null && qvar2 != null) || (qvar1 == null && qvar2 == null)) {throw new RuntimeException("Incorrect quantified variable")}
+
+  /* override def toPrincess: IFormula = {
+    val valList = List[ConstantTerm](this.getQuantifiedVariable1.toPrincess)
+    quanConsts(Quantifier.EX,valList,this.getNestedFormula.toPrincess)} */
 
   override def stringQuantifier(): String = {
     "EXISTS"
