@@ -1,5 +1,6 @@
 import Structure.{Action, Agent, HDMAS_Structure, State}
 import ap.SimpleAPI
+import ap.types.SortedConstantTerm
 //import ap.parser.IExpression.ConstantTerm
 //import ap.parser.smtlib.Absyn.ConstantTerm
 //import ap.parser.Environment.Variable
@@ -28,10 +29,6 @@ class ModelChecking extends Cloneable{
       if (delta.contains((s,i))){deltaSet.add(delta(s,i))}
     }
 
-    println("_______________")
-    println(s)
-    println(deltaSet)
-    println("_______________")
     if (deltaSet.nonEmpty) {
       var gq:IFormula = deltaSet.head
       deltaSet.foreach(x => gq = gq | x)
@@ -62,8 +59,8 @@ class ModelChecking extends Cloneable{
     actionSet.foreach(x => {
       //kSet += (x.getAction -> new ConstantTerm(s"k_${x.getAction}"))
       //lSet += (x.getAction -> new ConstantTerm(s"l_${x.getAction}"))
-      kSet += (x.getAction -> new ConstantTerm(s"k_${x.getAction}"))
-      lSet += (x.getAction -> new ConstantTerm(s"l_${x.getAction}"))
+      kSet += (x.getAction -> new SortedConstantTerm(s"k_${x.getAction}",Nat))
+      lSet += (x.getAction -> new SortedConstantTerm(s"l_${x.getAction}",Nat))
     })
     //actionSet.foreach(x => lSet += (x.getAction -> new ConstantTerm(s"l_${x.getAction}")))
     var controllableList = List[ConstantTerm]()
@@ -131,7 +128,7 @@ class ModelChecking extends Cloneable{
 
     //val formula = ConstantSubstVisitor(gQ,sub)
     val part = (andL & sumL) ==> formula
-    println("formula",formula)
+    // println("formula"+formula)
     val forallL = quanConsts(Quantifier.ALL,uncontrollableList,part)
     quanConsts(Quantifier.EX,controllableList,andK & sumK & forallL)
   }
@@ -240,7 +237,8 @@ class ModelChecking extends Cloneable{
   def PREIMG(M:HDMAS_Structure,t1:ITerm,t2:ITerm,Q:mutable.Set[State],assignment:List[Int],pre:String,y1:IConstant,y2:IConstant): mutable.Set[State] ={
     //y1 y2 means real variable y1 y2 , not position
 
-    withProver { p =>
+    //withProver { p =>
+    val p = SimpleAPI.spawn
       import p._
       import IExpression._
       var newt1 = t1
@@ -265,10 +263,10 @@ class ModelChecking extends Cloneable{
 
       var Z = mutable.Set[State]()
       val stateSet = M.getStateSet
-      println(stateSet)
+      //println(stateSet)
       stateSet.foreach(x => {
         scope{
-          println(x.getState)
+          //println(x.getState)
           pre match {
             case "eps" =>
               !! (PrF(M,x,newt1,newt2,Q))
@@ -276,18 +274,22 @@ class ModelChecking extends Cloneable{
               if ( ??? == SimpleAPI.ProverStatus.Sat ){ Z += x}
 
             case "Exists" =>
-              val formula = quanConsts(Quantifier.EX,List(y1.c),PrF(M,x,newt1,newt2,Q))
+              val Newt1 = newt1.asInstanceOf[IConstant]
+              val formula = quanConsts(Quantifier.EX,List(Newt1.c),PrF(M,x,Newt1,newt2,Q))
               !! (formula)
               if (??? == SimpleAPI.ProverStatus.Sat){Z += x}
 
             case "Forall" =>
-              val formula = quanConsts(Quantifier.ALL,List(y1.c),PrF(M,x,newt1,newt2,Q))
+              val Newt2 = newt2.asInstanceOf[IConstant]
+              val formula = quanConsts(Quantifier.ALL,List(Newt2.c),PrF(M,x,newt1,Newt2,Q))
               !! (formula)
               if (??? == SimpleAPI.ProverStatus.Sat){Z += x}
 
             case "EF" =>
-              val formula1 = quanConsts(Quantifier.ALL,List(y2.c),PrF(M,x,newt1,newt2,Q))
-              val formula2 = quanConsts(Quantifier.EX,List(y1.c),formula1)
+              val Newt1 = newt1.asInstanceOf[IConstant]
+              val Newt2 = newt2.asInstanceOf[IConstant]
+              val formula1 = quanConsts(Quantifier.ALL,List(Newt2.c),PrF(M,x,Newt1,Newt2,Q))
+              val formula2 = quanConsts(Quantifier.EX,List(Newt1.c),formula1)
               !! (formula2)
               if (??? == SimpleAPI.ProverStatus.Sat){Z += x}
 
@@ -297,15 +299,15 @@ class ModelChecking extends Cloneable{
               val formula1 = quanConsts(Quantifier.EX,List(Newt1.c),PrF(M,x,Newt1,Newt2,Q))
               val formula2 = quanConsts(Quantifier.ALL,List(Newt2.c),formula1)
               !! (formula2)
-              println(formula2)
+              //println(formula2)
               //println("------------------------")
               //println(formula1)
-              println("------------------------")
+              //println("------------------------")
               //println(formula2)
               //println(y2)
               //println(???)
               if (??? == SimpleAPI.ProverStatus.Sat){Z += x}
-              println(Z)
+              //println(Z)
 
             case _ => throw new RuntimeException("Incorrect quantifier type")
 
@@ -315,9 +317,11 @@ class ModelChecking extends Cloneable{
 
 
       })
-      Z
+    p.shutDown
+    Z
+
       //shutDown
-    }
+    //}
       //val p = spawnWithAssertions
       //import p._
       //import IExpression._
@@ -334,6 +338,7 @@ class ModelChecking extends Cloneable{
     while ((Z & W) != W){
       W = Z
       Z = PREIMG(M,t1,t2,W,assignment,pfix,y1,y2) & Q
+      //println("Z: "+Z)
     }
     Z
   }
@@ -570,7 +575,7 @@ object ModelChecking{
     val x1 = IConstant(act1.p)
     val x2 = IConstant(act2.p)
     val x3 = IConstant(act3.p)
-    val g1:IFormula = (x1 >= 2 * x2) & (x3 > 3) //& (x1>=0) & (x2>=0) & (x3>=0)
+    val g1:IFormula = (x1 >= 2 * x2) & (x3 <= 3) //& (x1>=0) & (x2>=0) & (x3>=0)
     val g2:IFormula = (x1 + x2 + x3 <= 10) & (x3 > 3) //& (x1>=0) & (x2>=0) & (x3>=0)
     val g3:IFormula = (x1 > 5) & (x3 > x1)//& (x1>=0) & (x3>=0)
     val g4:IFormula = (x1 > 5) & (x1 + 2*x3 > 3*x2) //& (x1>=0) & (x2>=0) & (x3>=0)
@@ -582,7 +587,7 @@ object ModelChecking{
 
     val guards:Map[String,IFormula] = Map(("g1",g1),("g2",g2),("g3",g3),("g4",g4),("g5",g5),("g6",g6),("g7",g7))
 
-    val deltaSS:Map[(State, State),IFormula] = Map(((s1,s1),INot(g1) &  INot(g2)),((s1,s2),g1),((s1,s3),g2),((s2,s3),INot(g3)),((s2,s4),g3),((s3,s1),INot(g6)),((s3,s5),g6),((s4,s3),INot(g4)),((s4,s6),g4),((s5,s2),INot(g7)),((s5,s6),g7),((s6,s6),g5))
+    val deltaSS:Map[(State, State),IFormula] = Map(((s1,s1),INot(g1) &  INot(g2)),((s1,s2),g1),((s1,s3),g2),((s2,s3),INot(g3)),((s2,s4),g3),((s3,s1),INot(g6)),((s3,s5),g6),((s4,s2),INot(g4)),((s4,s6),g4),((s5,s2),INot(g7)),((s5,s6),g7),((s6,s6),g5))
 
     val p:AtomicProposition = new AtomicProposition("p" )
     val q:AtomicProposition = new AtomicProposition("q")
@@ -596,8 +601,10 @@ object ModelChecking{
     val y1 = new Variable(1)
     val y2 = new Variable(2)
     val phi:Formulae = new StrategicFormulae(new Constant(7), new Constant(4),new NextFormulae(new FEQuantifierFormulae(new StrategicFormulae(y1,y2,new GloballyFormulae(p)),y2,y1)))
+    val phi2:Formulae = new StrategicFormulae(new Constant(6), new Constant(3), new NextFormulae(new ExistQuantifierFormulae(new StrategicFormulae(y1,new Constant(10),new UntilFormulae(new FEQuantifierFormulae(new StrategicFormulae(y1,y2,new GloballyFormulae(p)),y2,y1),new ForallQuantifierFormulae(new StrategicFormulae(new Constant(0),y2,new GloballyFormulae(q)),y2))),y1)))
 
     println(test.GlobalMC(M,phi,null))
+    println(test.GlobalMC(M,phi2,null))
 
 
     /*

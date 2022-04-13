@@ -1,7 +1,7 @@
 package Structure
 import ap.parser.IVariable
 import ap.terfor.ConstantTerm
-import ap.types
+import ap.types._
 import ap.types.Sort.Nat
 
 import scala.collection.mutable
@@ -14,7 +14,7 @@ class Action(name:Int) extends Cloneable{
   def setAction(newAction:Int):Unit = {this.action = newAction}
 
   //action profile
-  val p:ConstantTerm = new ConstantTerm(s"x_$name")
+  val p:ConstantTerm = new SortedConstantTerm(s"x_$name",Nat)
 
 
 
