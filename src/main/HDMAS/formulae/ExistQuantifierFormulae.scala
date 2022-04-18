@@ -37,5 +37,5 @@ class ExistQuantifierFormulae(nested:Formulae,qvar1:Variable) extends Quantifier
     this.quantifierFormulaFactory(QuantifierType.FORALL,nested,qvar1,null)
   }
 
-  override def toString: String = this.stringQuantifier()  + this.getQuantifiedVariable1 + ": (" + this.getNestedFormula + ")"
+  override def toString: String = this.stringQuantifier() + " " + this.getQuantifiedVariable1 + ": (" + this.getNestedFormula + ")"
 }

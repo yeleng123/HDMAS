@@ -32,7 +32,7 @@ class EFQuantifierFormulae(nested:Formulae,var1:Variable,var2:Variable) extends 
 
   override def getQuantifierType: QuantifierType = QuantifierType.EF
 
-  override def toString: String = "Exists"  + this.getQuantifiedVariable1 + "Forall"  + this.getQuantifiedVariable2 + ": (" + this.getNestedFormula + ")"
+  override def toString: String = "Exists "  + this.getQuantifiedVariable1 + " Forall "  + this.getQuantifiedVariable2 + ": (" + this.getNestedFormula + ")"
 
   /* override def toPrincess: IFormula = {
     val seq = Seq((Quantifier.EX,this.getQuantifiedVariable1.toPrincess),(Quantifier.ALL,this.getQuantifiedVariable2.toPrincess))
